@@ -3,26 +3,34 @@ count = 0;
 %preallocate for memory
 
 %the vector that holds the images
-str = strings(1,100);
+str = strings(1,10);
 
 %the vector that holds the location of the
 location = strings(1,100);
 
-%for loop to store locations
-%{
 
-for x = 1:100
-    fprintf('hello\n');
+%creating a video reader object
+v = VideoReader("IMG_6010.MOV");
+video = read(v,[1,10]);
+videor = readFrame(v);
+imved = v.NumFrames;
+
+
+for x = 1:10
+    %fprintf('hello\n');
     %sets each frame into the respective array
     str(x)= sprintf(" 'C:\\Users\\unity\\source\\repos\\Year two\\clas\\ECNG 3020 Heart Rate\\frame%d.jpg' ",count);
-    disp(str(x));
+    %disp(str(x));
+    %image_vec(x) = imread(str(x)); 
     count= count+1;
 
 end 
 
+%testim = imread(str(1));
 %}
 
 
+%{
 
 
 
@@ -123,6 +131,8 @@ Mld = rica(y,2);
 %plot(Mld.)
 %apply ICA
 %data_ICA = transform(Mld,)
+%}
+
 %}
 
 
