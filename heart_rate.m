@@ -107,12 +107,13 @@ figure(7);subplot(2,2,4);imshow(uint8(ROI)); title('-original');
 %-----------PART 5: Independent Component Analysis---------------
 
 %-----------PART 5, a)signal source creation---------------
-
+% %{
 %i am finding the mean of the image
 % i am doing this to obtain a time series of means of the frames
 meanIntensityValueR = mean2(ImgR);
 meanIntensityValueG = mean2(ImgG);
 meanIntensityValueB = mean2(ImgB);
+% %}
 
 
 %{
