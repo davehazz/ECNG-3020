@@ -8,13 +8,14 @@ str = strings(1,10);
 %the vector that holds the location of the
 location = strings(1,100);
 
-
+%{
 %creating a video reader object
 v = VideoReader("IMG_6010.MOV");
 video = read(v,[1,10]);
 videor = readFrame(v);
 imved = v.NumFrames;
 
+%}
 
 for x = 1:10
     %fprintf('hello\n');
@@ -30,7 +31,7 @@ end
 %}
 
 
-%{
+
 
 
 
@@ -59,7 +60,7 @@ ROI = image1GF(RegRowSt:RegRowFin,RegColSt:RegColFin);
 ROI2 = image1RF(RegRowSt:RegRowFin,RegColSt:RegColFin);
 ROI3 = image1BF(RegRowSt:RegRowFin,RegColSt:RegColFin);
 
-%{
+
 %displaying the region of interest
 figure(1);imshow(uint8(ROI));
 figure(2);imshow(uint8(ROI2));
@@ -67,7 +68,7 @@ figure(3);imshow(uint8(ROI3));
 %}
 
 %-------------Test Part---------------
-%{
+
 location = 'C:\Users\unity\source\repos\Year two\clas\ECNG 3020 Heart Rate\frame0.jpg';
 image1G = image1d(:,:,2);
 RegRowSt = 500;
