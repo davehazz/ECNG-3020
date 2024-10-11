@@ -1,3 +1,6 @@
+ROI_R = zeros(1920,1080,30);
+ROI_G = zeros(1920,1080,30);
+ROI_B = zeros(1920,1080,30);
 
 function [y] = myfun(data)
     
