@@ -8,6 +8,7 @@ function [y] = myfun(data)
         image1R = str(x);
         image1G = image1(:,:,2);
         image1B = image1(:,:,3);
+function [ROI_R,ROI_G,ROI_B] = myfun(vectorRchannel,vectorGchannel,vectorBchannel)
         RegRowSt = 500;
         RegRowFin = 900;
         RegColSt = 500;
