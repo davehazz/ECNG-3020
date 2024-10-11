@@ -13,6 +13,9 @@ function [y] = myfun(data)
         RegColSt = 500;
         RegColFin = 700;
         
+        ROI_R(x) = vectorRchannel(x(RegRowSt:RegRowFin,RegColSt:RegColFin));
+        ROI_G(x) = vectorRchannel(x(RegRowSt:RegRowFin,RegColSt:RegColFin));
+        ROI_B(x) = vectorRchannel(x(RegRowSt:RegRowFin,RegColSt:RegColFin));
         %getting the rgb colour channel
         image1GF = double(image1G);
         image1RF = double(image1R);
