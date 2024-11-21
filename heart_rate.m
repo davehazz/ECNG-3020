@@ -1,22 +1,62 @@
-
-count = 0;
-%preallocate for memory
-
-%the vector that holds the images
-str = strings(1,10);
-
-%the vector that holds the location of the
-location = strings(1,100);
-
-%{
 %creating a video reader object
 v = VideoReader("IMG_6010.MOV");
-video = read(v,[1,10]);
 videor = readFrame(v);
 imved = v.NumFrames;
 
-%}
+te(:,:,1) = double(videor(:,:,1,1)); %aquire red channel
 
+%-------------Part 1:vectors for each color channel---------
+
+[vectorRchannel,vectorGchannel,vectorBchannel] = color_channel(v);
+
+%------------Part 2: Region of Interest--------------
+
+[ROI_R,ROI_G,ROI_B] = region_of_interest(vectorRchannel,vectorGchannel,vectorBchannel);
+
+%------------Part 3:filtering the image----------------
+[R_filtered,G_filtered,B_filtered] = filter_img_avg(ROI_R,ROI_G,ROI_B);
+
+
+%------------Part 4: Signal Source------------------
+[R_Source,G_Source,B_Source] = signal_source(R_filtered,G_filtered,B_filtered);
+
+timmm = v.FrameRate*30;
+
+%figure(2);plot(G_Source,LineStyle="--",Color="g");
+%figure(3);plot(B_Source,LineStyle=":",Color="b");
+
+combined_signal = ones(3,200);
+combined_signal(1,:) = R_Source;
+combined_signal(2,:) = G_Source;
+combined_signal(3,:) = B_Source;
+
+
+tim = linspace(0,6.67);
+%ica
+t = 0:1/30:6.66;
+plot(t,R_Source);
+
+
+[Zica, W, T, mu] = fastICA(R_Source,3,"kurtosis",0);
+[Zica, W, T, mu] = fastICA(R_Source,3,"kurtosis",0);
+
+figure(1);plot(Zica(1,:),LineStyle="-",Marker="o",Color="r");
+
+figure(2);plot(Zica(2,:),LineStyle=":",Marker="v",Color='g');
+figure(3);plot(Zica(3,:),LineStyle="-.",Marker="*",Color='b');
+
+
+newf = fft(Zica(2,:));
+plot(1./t,abs(newf));
+
+
+ppx = pwelch(Zica(1,:));
+y = fft(R_Source);
+plot(t,abs(y));
+figure(4);plot(y);
+
+%{
+%{
 for x = 1:10
     %fprintf('hello\n');
     %sets each frame into the respective array
@@ -68,7 +108,7 @@ figure(3);imshow(uint8(ROI3));
 %}
 
 %-------------Test Part---------------
-
+%{
 location = 'C:\Users\unity\source\repos\Year two\clas\ECNG 3020 Heart Rate\frame0.jpg';
 image1G = image1d(:,:,2);
 RegRowSt = 500;
@@ -81,6 +121,7 @@ ROI = image1GF(RegRowSt:RegRowFin,RegColSt:RegColFin);
 
 
 %---------------PART 4: Use Filter---------------
+%{
 %image_test =  'C:\Users\unity\source\repos\Year two\clas\ECNG 3020 Heart Rate\frame9.jpg';
 %image1 = imread(RO1);
 %image1d = double(image1);
@@ -103,18 +144,19 @@ ImgB = convn(double(ROI3),AvgFil,'same');
 figure(7);subplot(2,2,3);imshow(uint8(ImgF)); title('ImgF-10');
 figure(7);subplot(2,2,4);imshow(uint8(ROI)); title('-original');
 
-
+%}
 
 %-----------PART 5: Independent Component Analysis---------------
 
 %-----------PART 5, a)signal source creation---------------
-% %{
+% 
 %i am finding the mean of the image
 % i am doing this to obtain a time series of means of the frames
+%{
 meanIntensityValueR = mean2(ImgR);
 meanIntensityValueG = mean2(ImgG);
 meanIntensityValueB = mean2(ImgB);
-% %}
+ %}
 
 
 %{
@@ -135,6 +177,6 @@ Mld = rica(y,2);
 %data_ICA = transform(Mld,)
 %}
 
+
+
 %}
-
-
