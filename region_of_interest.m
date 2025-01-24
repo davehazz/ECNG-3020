@@ -1,8 +1,7 @@
 function [ROI_R,ROI_G,ROI_B] = region_of_interest(vectorRchannel,vectorGchannel,vectorBchannel)
-  
-ROI_R = zeros(401,201,200);
-ROI_G = zeros(401,201,200);
-ROI_B = zeros(401,201,200);
+a = 151;
+b = 401;
+c = 161;
 
         RegRowSt = 500;
         RegRowFin = 900;
