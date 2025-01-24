@@ -8,6 +8,10 @@ c = 161;
         RegColSt = 500;
         RegColFin = 700;
 
+        RegRowSt = 450;
+        RegRowFin = 600;
+        RegColSt = 400;
+        RegColFin = 800;
 
     for x = 1:200
         ROI_R(:,:,x) = vectorRchannel(RegRowSt:RegRowFin,RegColSt:RegColFin,x);
