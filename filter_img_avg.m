@@ -19,7 +19,7 @@ AvgFil = AvgFil/sum(AvgFil(:));
 %ImgG = convn(double(ROI),AvgFil,'same');
 %ImgB = convn(double(ROI3),AvgFil,'same');
 
-for x = 1:200
+for x = 1:161
     R_filtered_avg(:,:,x) = convn(inputArg1(:,:,x),AvgFil,"same");
     G_filtered_avg(:,:,x) = convn(inputArg2(:,:,x),AvgFil,"same");
     B_filtered_avg(:,:,x) = convn(inputArg3(:,:,x),AvgFil,"same");

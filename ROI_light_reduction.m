@@ -17,6 +17,10 @@ ROI_Light_filter_B = zeros(a,b,c);
         RegColFin = 600;
 
 
+    for x = 1:161
+        ROI_Light_filter_R(:,:,x) = inputArg1(RegRowSt:RegRowFin,RegColSt:RegColFin,x);
+        ROI_Light_filter_G(:,:,x) = inputArg2(RegRowSt:RegRowFin,RegColSt:RegColFin,x);
+        ROI_Light_filter_B(:,:,x) = inputArg3(RegRowSt:RegRowFin,RegColSt:RegColFin,x);
 
         %getting the rgb colour channel
 
