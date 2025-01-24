@@ -1,9 +1,9 @@
 function [R_filtered_avg,G_filtered_avg,B_filtered_avg] = filter_img_avg(inputArg1,inputArg2,inputArg3)
 
 %this function performs the filering on the image
-R_filtered_avg = zeros(401,201,200);
-G_filtered_avg = zeros(401,201,200);
-B_filtered_avg = zeros(401,201,200);
+R_filtered_avg = zeros(151,401,161);
+G_filtered_avg = zeros(151,401,161);
+B_filtered_avg = zeros(151,401,161);
 
 
 %%% Averaging Filter
