@@ -1,24 +1,63 @@
 %creating a video reader object
-v = VideoReader("IMG_6010.MOV");
+v = VideoReader("IMG_9136.MOV");
 videor = readFrame(v);
 imved = v.NumFrames;
 
 te(:,:,1) = double(videor(:,:,1,1)); %aquire red channel
-
+t = 0:1/29.97:5.3717;
 %-------------Part 1:vectors for each color channel---------
 
-[vectorRchannel,vectorGchannel,vectorBchannel] = color_channel(v);
+[vectorRchannel,vectorGchannel,vectorBchannel,imgg] = color_channel(v);
+
+%figure(1);imshow(uint8(vectorRchannel(:,:,1)));
+figure(1);imshow(uint8(vectorGchannel(:,:,1)));
+%figure(3);imshow(uint8(vectorBchannel(:,:,1)));
+
 
 %------------Part 2: Region of Interest--------------
 
 [ROI_R,ROI_G,ROI_B] = region_of_interest(vectorRchannel,vectorGchannel,vectorBchannel);
 
+%[ROI_Light_filter_R,ROI_Light_filter_G,ROI_Light_filter_B] = ROI_light_reduction(vectorRchannel,vectorGchannel,vectorBchannel);
+
+figure(2);imshow(uint8(ROI_G(:,:,1)));
+
+
 %------------Part 3:filtering the image----------------
 [R_filtered,G_filtered,B_filtered] = filter_img_avg(ROI_R,ROI_G,ROI_B);
+
+figure(3);imshow(uint8(G_filtered(:,:,1)));
 
 
 %------------Part 4: Signal Source------------------
 [R_Source,G_Source,B_Source] = signal_source(R_filtered,G_filtered,B_filtered);
+
+
+for x = 1:161
+    R_Source(x) = mean2(inputArg1(:,:,x));
+    G_Source(x) = mean2(inputArg1(:,:,x));
+    B_Source(x) = mean2(inputArg1(:,:,x));
+
+end
+
+figure(4);plot(t,R_Source,Color="r");
+figure(5);plot(t,G_Source,Color="g");
+figure(6);plot(t,B_Source,Color="b");
+
+
+
+%------------Part 5: Post Signal Filtering------------------
+[normalizeR,normalizeG,normalizeB] = normalize(R_Source,G_Source,B_Source);
+
+
+%before ICA
+plot(t,normalizeR,LineStyle="-");
+hold on
+figure(7);plot(t,normalizeG,LineStyle="--");
+plot(t,normalizeB,LineStyle=":");
+hold off
+
+%------------Part 6: ICA------------------
 
 timmm = v.FrameRate*30;
 
@@ -26,31 +65,82 @@ timmm = v.FrameRate*30;
 %figure(3);plot(B_Source,LineStyle=":",Color="b");
 
 combined_signal = ones(3,200);
-combined_signal(1,:) = R_Source;
-combined_signal(2,:) = G_Source;
-combined_signal(3,:) = B_Source;
+combined_signal(1,:) = normalizeR(1,:);
+combined_signal(2,:) = normalizeG(1,:);
+combined_signal(3,:) = normalizeB(1,:);
 
 
-tim = linspace(0,6.67);
+tim = 0:0.03333:6.66;
 %ica
-t = 0:1/30:6.66;
-plot(t,R_Source);
 
 
-[Zica, W, T, mu] = fastICA(R_Source,3,"kurtosis",0);
-[Zica, W, T, mu] = fastICA(R_Source,3,"kurtosis",0);
-
-figure(1);plot(Zica(1,:),LineStyle="-",Marker="o",Color="r");
-
-figure(2);plot(Zica(2,:),LineStyle=":",Marker="v",Color='g');
-figure(3);plot(Zica(3,:),LineStyle="-.",Marker="*",Color='b');
+Zica_R = fastICA(normalizeR,3,"kurtosis",1);
+Zica_G = fastICA(normalizeG,3,"kurtosis",0);
+Zica_B = fastICA(normalizeB,3,"kurtosis",0);
 
 
-newf = fft(Zica(2,:));
-plot(1./t,abs(newf));
+figure(1);plot(t,Zica_R(1,:),LineStyle="-",Color="r");
+hold on
+plot(t,Zica_G(1,:),LineStyle="--",Color='g');
+plot(t,Zica_B(1,:),LineStyle=":",Color='b');
+
+figure(2);plot(tim,Zica_R(2,:),LineStyle="-",Marker="o",Color="r");
+hold on
+plot(tim,Zica_G(2,:),LineStyle=":",Marker="v",Color='g');
+plot(tim,Zica_B(2,:),LineStyle="-.",Marker="*",Color='b');
 
 
-ppx = pwelch(Zica(1,:));
+figure(3);plot(tim,Zica_R(3,:),LineStyle="-",Marker="o",Color="r");
+hold on
+plot(tim,Zica_G(3,:),LineStyle=":",Marker="v",Color='g');
+plot(tim,Zica_B(3,:),LineStyle="-.",Marker="*",Color='b');
+
+
+
+
+%------------Part 7: FFT and PSD------------------
+
+figure(3);pwelch(Zica_G(1,:));
+figure(1);pwelch(G_Source);
+figure(2);pwelch(R_Source);
+figure(4);pwelch(normalizeG);
+pwelch(normalizeG);
+
+ff_R = fft2(Zica_G(1,:));
+ff_g = fft2(normalizeG);
+plot(abs(ff_R));
+
+periodogram(ff_R);
+
+nfft = length(Zica_G(1,:));
+periodogram(Zica_G(1,:),nfft,);
+
+%since it is double sided
+s_oneSide = ff_R(1:80);
+periodogram(ff_R);
+
+
+bandpass(abs(s_oneSide),[1 4],1000);
+
+Fs = 10000;            % Sampling frequency                    
+T = 1/Fs;             % Sampling period       
+L = 6.67;             % Length of signal
+t = (0:L-1)*T;        % Time vector
+
+f = Fs*(0:200/2-1)/200;
+S_meg = abs(s_oneSide)/(100);
+
+plot(S_meg);
+plot(Zica_B(1,:));
+
+
+ppx = pwelch(S_meg);
+plot(ppx); 
+
+y = bandpass(ppx,[0.8 2], 1000);
+plot(y);
+
+
 y = fft(R_Source);
 plot(t,abs(y));
 figure(4);plot(y);
