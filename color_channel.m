@@ -1,24 +1,27 @@
-function [vectorRchannel,vectorGchannel,vectorBchannel] = color_channel(vid)
+function [vectorRchannel,vectorGchannel,vectorBchannel,test_frames] = color_channel(vid)
 
 %read vids
 %this function reads in all the images into a vector
+vid = VideoReader("IMG_9136.MOV");
+len = vid.NumFrame -800;
 
-vectorRchannel = zeros(1920,1080,200);
-vectorGchannel = zeros(1920,1080,200);
-vectorBchannel = zeros(1920,1080,200);
+vectorRchannel = zeros(1920,1080,len);
+vectorGchannel = zeros(1920,1080,len);
+vectorBchannel = zeros(1920,1080,len);
 
 %newGch = zeros(1920,1080,30);
 
 
 
-vid = VideoReader("IMG_6010.MOV");
-test_frames = read(vid,[1 278]);
+test_frames = read(vid,[1 len]);
+
 
 stopper = round(vid.Duration/5);
 start = 1;
 endd = round((1/stopper)*vid.NumFrames);
 
 p=1;
+%{
 while stopper >=1
     test_frames = read(vid,[start endd]);
     for x =start:endd
@@ -50,7 +53,9 @@ end
 
 
 
-for x =1:200
+%}
+
+for x =1:len
     %this gave an error bacause i'm saving one image in a vector for size
     %30
     %str(x)= sprintf(" 'C:\\Users\\unity\\source\\repos\\Year two\\clas\\ECNG 3020 Heart Rate\\frame%d.jpg' ",count);
@@ -61,7 +66,8 @@ for x =1:200
     vectorRchannel(:,:,x) = double(test_frames(:,:,1,x)); %aquire red channel
     vectorGchannel(:,:,x) = double(test_frames(:,:,2,x)); %aquire green channel
     vectorBchannel(:,:,x) = double(test_frames(:,:,3,x)); %aquire blue channel
-
+    
+  
     %channelG = nz(:,:,2);
     %shell(x) = double(nz);
     %shell(x) = double(read(v,x));
