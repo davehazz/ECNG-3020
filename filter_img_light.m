@@ -4,6 +4,7 @@ function [R_filtered_light,G_filtered_light,B_filtered_light] = filter_img_light
 
 %   this removes background light
 
+sz = 900;
 
 %this function performs the filering on the image
 R_filtered_light = zeros(246,301,161);
@@ -17,7 +18,7 @@ B_filtered_light = zeros(246,301,161);
 [R_Source,G_Source,B_Source] = signal_source(R_filtered_avg,G_filtered_avg,B_filtered_avg);
 
 
-for x = 1:c
+for x = 1:sz
     
     R_filtered_light(x) = convn(inputArg1(:,:,x),AvgFil,'same');
     G_filtered_light(x) = convn(inputArg1(:,:,x),AvgFil,'same');
