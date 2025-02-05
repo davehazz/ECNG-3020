@@ -3,7 +3,7 @@ function [vectorRchannel,vectorGchannel,vectorBchannel,test_frames] = color_chan
 %read vids
 %this function reads in all the images into a vector
 vid = VideoReader("IMG_9136.MOV");
-len = vid.NumFrame -800;
+len = 700;
 
 vectorRchannel = zeros(1920,1080,len);
 vectorGchannel = zeros(1920,1080,len);
