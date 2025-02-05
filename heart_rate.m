@@ -57,6 +57,24 @@ figure(7);plot(t,normalizeG,LineStyle="--");
 plot(t,normalizeB,LineStyle=":");
 hold off
 
+%Detrending
+
+R_de = zeros(1,700);
+G_de = zeros(1,700);
+B_de = zeros(1,700);
+
+R_de = detrend(normalizeR);
+G_de = detrend(normalizeG);
+B_de(:,x) = detrend(normalizeB);
+
+plot(t,R_de,LineStyle="-");
+hold on
+plot(t,normalizeR,LineStyle="-");
+legend('Original Data','Detrended Data')
+
+hold off
+
+
 %------------Part 6: ICA------------------
 
 timmm = v.FrameRate*30;
