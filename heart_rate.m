@@ -4,13 +4,16 @@ videor = readFrame(v);
 imved = v.NumFrames;
 
 te(:,:,1) = double(videor(:,:,1,1)); %aquire red channel
-t = 0:1/29.97:5.3717;
+t = 0:1/29.97:23.33;
 %-------------Part 1:vectors for each color channel---------
 
 [vectorRchannel,vectorGchannel,vectorBchannel,imgg] = color_channel(v);
 
 %figure(1);imshow(uint8(vectorRchannel(:,:,1)));
-figure(1);imshow(uint8(vectorGchannel(:,:,1)));
+figure(1);imshow(uint8(vectorGchannel(:,:,600)));
+figure(2);imshow(uint8(vectorGchannel(:,:,610)));
+figure(3);imshow(uint8(vectorGchannel(:,:,620)));
+
 %figure(3);imshow(uint8(vectorBchannel(:,:,1)));
 
 
@@ -20,23 +23,36 @@ figure(1);imshow(uint8(vectorGchannel(:,:,1)));
 
 %[ROI_Light_filter_R,ROI_Light_filter_G,ROI_Light_filter_B] = ROI_light_reduction(vectorRchannel,vectorGchannel,vectorBchannel);
 
-figure(2);imshow(uint8(ROI_G(:,:,1)));
+figure(2);imshow(uint8(ROI_G(:,:,20)));
+figure(3);imshow(uint8(ROI_G(:,:,50)));
+figure(4);imshow(uint8(ROI_G(:,:,90)));
 
 
 %------------Part 3:filtering the image----------------
 [R_filtered,G_filtered,B_filtered] = filter_img_avg(ROI_R,ROI_G,ROI_B);
 
-figure(3);imshow(uint8(G_filtered(:,:,1)));
+figure(3);imshow(uint8(G_filtered(:,:,100)));
+
+%background light reduction
+[ROI_Light_filter_R,ROI_Light_filter_G,ROI_Light_filter_B] = ROI_light_reduction(vectorRchannel,vectorGchannel,vectorBchannel);
+figure(3);imshow(uint8(ROI_Light_filter_G(:,:,600)));
 
 
 %------------Part 4: Signal Source------------------
 [R_Source,G_Source,B_Source] = signal_source(R_filtered,G_filtered,B_filtered);
 
+[R_Source_light,G_Source_light,B_Source_light] = signal_source(ROI_Light_filter_R,ROI_Light_filter_G,ROI_Light_filter_B);
 
-for x = 1:161
-    R_Source(x) = mean2(inputArg1(:,:,x));
-    G_Source(x) = mean2(inputArg1(:,:,x));
-    B_Source(x) = mean2(inputArg1(:,:,x));
+
+R_c = zeros(1,700);
+G_c = zeros(1,700);
+B_c = zeros(1,700);
+
+
+for x = 1:700
+    R_c(:,x) = R_Source(:,x) - 0.75*R_Source_light(:,x);
+    G_c(:,x) = G_Source(:,x) - 0.75*G_Source_light(:,x);
+    B_c(:,x) = B_Source(:,x) - 0.75*B_Source_light(:,x);
 
 end
 
@@ -74,7 +90,7 @@ hold off
 %before ICA
 plot(t,normalizeR,LineStyle="-");
 hold on
-figure(7);plot(t,normalizeG,LineStyle="--");
+plot(t,normalizeG,LineStyle="--");
 plot(t,normalizeB,LineStyle=":");
 hold off
 
@@ -109,30 +125,34 @@ combined_signal(2,:) = normalizeG(1,:);
 combined_signal(3,:) = normalizeB(1,:);
 
 
-tim = 0:0.03333:6.66;
+tim = 0:0.03333:1;
 %ica
 
 
 Zica_R = fastICA(normalizeR,3,"kurtosis",1);
-Zica_G = fastICA(normalizeG,3,"kurtosis",0);
+Zica_G = fastICA(G_de,3,"kurtosis",0);
 Zica_B = fastICA(normalizeB,3,"kurtosis",0);
 
 
-figure(1);plot(t,Zica_R(1,:),LineStyle="-",Color="r");
+figure(1);
+plot(t,Zica_G(1,:),LineStyle="-",Color="r");
 hold on
-plot(t,Zica_G(1,:),LineStyle="--",Color='g');
-plot(t,Zica_B(1,:),LineStyle=":",Color='b');
+plot(t,Zica_G(2,:),LineStyle="--",Color='g');
+plot(t,Zica_G(3,:),LineStyle=":",Color='b');
+hold off
 
-figure(2);plot(tim,Zica_R(2,:),LineStyle="-",Marker="o",Color="r");
+figure(2);
+plot(t,Zica_R(2,:),LineStyle="-",Color="r");
 hold on
-plot(tim,Zica_G(2,:),LineStyle=":",Marker="v",Color='g');
-plot(tim,Zica_B(2,:),LineStyle="-.",Marker="*",Color='b');
+plot(t,Zica_G(2,:),LineStyle=":",Color='g');
+plot(t,Zica_B(2,:),LineStyle="-.",Color='b');
 
 
-figure(3);plot(tim,Zica_R(3,:),LineStyle="-",Marker="o",Color="r");
+figure(3);
+plot(t,Zica_G(1,:),LineStyle="-",Color='r');
 hold on
-plot(tim,Zica_G(3,:),LineStyle=":",Marker="v",Color='g');
-plot(tim,Zica_B(3,:),LineStyle="-.",Marker="*",Color='b');
+plot(t,Zica_G(2,:),LineStyle=":",Color='g');
+plot(t,Zica_G(3,:),LineStyle="-.",Color='b');
 
 
 
@@ -145,9 +165,6 @@ figure(2);pwelch(R_Source);
 figure(4);pwelch(normalizeG);
 pwelch(normalizeG);
 
-ff_R = fft2(Zica_G(1,:));
-ff_g = fft2(normalizeG);
-plot(abs(ff_R));
 
 %----------FFT OF the signal-------------
 Fs = 1000;            % Sampling frequency                    
@@ -181,8 +198,7 @@ plot(ts,ft2);
 plot(ts,ft3);
 plot(ts,ft4);
 
-nfft = length(Zica_G(1,:));
-periodogram(Zica_G(1,:),nfft,);
+hold off
 
 X = ft1+ft2+ft3+ft4;
 plot(ts,X);
@@ -208,12 +224,7 @@ hold off
 
 %----------PSD Of the signal---------
 
-bandpass(abs(s_oneSide),[1 4],1000);
 
-Fs = 10000;            % Sampling frequency                    
-T = 1/Fs;             % Sampling period       
-L = 6.67;             % Length of signal
-t = (0:L-1)*T;        % Time vector
 
 f = Fs*(0:200/2-1)/200;
 S_meg = abs(s_oneSide)/(100);
@@ -225,7 +236,7 @@ plot(Zica_B(1,:));
 ppx = pwelch(S_meg);
 plot(ppx); 
 
-y = bandpass(ppx,[0.8 2], 1000);
+y = bandpass(ppx,[1 2], 1000);
 plot(y);
 
 
