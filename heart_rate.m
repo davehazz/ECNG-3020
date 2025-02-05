@@ -119,6 +119,16 @@ periodogram(Zica_G(1,:),nfft,);
 s_oneSide = ff_R(1:80);
 periodogram(ff_R);
 
+%----------Bandpass filtering--------
+
+figure(1);bandpass(X, [50 200], 1000);
+figure(2);bandpass(Zica_G(1,:), [1 2], 1000);
+figure(3);bandpass(Zica_B(1,:), [1 2], 1000);
+figure(4);bandpass(normalizeG, [1 2], 1000);
+
+hold off
+
+%----------PSD Of the signal---------
 
 bandpass(abs(s_oneSide),[1 4],1000);
 
