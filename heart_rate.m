@@ -110,7 +110,37 @@ ff_R = fft2(Zica_G(1,:));
 ff_g = fft2(normalizeG);
 plot(abs(ff_R));
 
-periodogram(ff_R);
+%----------FFT OF the signal-------------
+Fs = 1000;            % Sampling frequency                    
+T = 1/Fs;             % Sampling period       
+L = 500;             % Length of signal
+T = (0:L-1)*T;        % Time vector
+
+Y = fft(Zica_G(1,:));
+plot(Fs/L*(0:L-1),abs(Y),"LineWidth",2)
+title("Complex Magnitude of fft Spectrum")
+xlabel("f (Hz)")
+ylabel("|fft(X)|")
+
+%test
+A = 5;
+f = 1/pi; %this is the frequency so the period will be 1/f
+theta = 0; %this is the phase shift
+ts = linspace(0,100,10000);  
+%linspace goes from 0 to pi with 100000 subdivisions
+w = 2*pi*f; %this is the angluar frequency or the fundamental frequency
+
+
+ft1 = A*sin(w*ts);
+ft2 = A*sin(2*pi*300*ts);
+ft3 = A*sin(2*pi*150*ts);
+ft4 = A*sin(2*pi*100*ts);
+
+plot(ts,ft1);
+hold on
+plot(ts,ft2);
+plot(ts,ft3);
+plot(ts,ft4);
 
 nfft = length(Zica_G(1,:));
 periodogram(Zica_G(1,:),nfft,);
