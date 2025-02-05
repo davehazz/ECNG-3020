@@ -47,7 +47,15 @@ figure(6);plot(t,B_Source,Color="b");
 
 
 %------------Part 5: Post Signal Filtering------------------
-[normalizeR,normalizeG,normalizeB] = normalize(R_Source,G_Source,B_Source);
+ 
+%Normalization
+[normalizeR,normalizeG,normalizeB] = normalize_sig(R_c,G_c,B_c);
+
+newR = normalize(R_Source);
+figure(1);plot(t,newR);
+%hold on
+figure(2);plot(t,R_Source);
+hold off
 
 
 %before ICA
