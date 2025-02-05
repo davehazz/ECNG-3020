@@ -145,9 +145,18 @@ plot(ts,ft4);
 nfft = length(Zica_G(1,:));
 periodogram(Zica_G(1,:),nfft,);
 
-%since it is double sided
-s_oneSide = ff_R(1:80);
-periodogram(ff_R);
+X = ft1+ft2+ft3+ft4;
+plot(ts,X);
+
+%showing fft
+plot(ts,ft1);
+Fs= 1000; %sampling frequency
+T = 1/Fs; %sampling period
+L = 10000;
+t = (0:L-1)*T; %time vector
+
+ft_new = fft(X);
+plot(Fs/L*(0:L-1),abs(ft_new));
 
 %----------Bandpass filtering--------
 
