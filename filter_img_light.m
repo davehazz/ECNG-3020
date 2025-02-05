@@ -3,13 +3,12 @@ function [R_filtered_light,G_filtered_light,B_filtered_light] = filter_img_light
 %this is for removing background light
 
 %   this removes background light
-
 sz = 900;
 
 %this function performs the filering on the image
-R_filtered_light = zeros(246,301,161);
-G_filtered_light = zeros(246,301,161);
-B_filtered_light = zeros(246,301,161);
+R_filtered_light = zeros(151,301,sz);
+G_filtered_light = zeros(151,301,sz);
+B_filtered_light = zeros(151,301,sz);
 
 
 [ROI_R,ROI_G,ROI_B] = region_of_interest(vectorRchannel,vectorGchannel,vectorBchannel)
