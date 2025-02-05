@@ -40,9 +40,22 @@ for x = 1:161
 
 end
 
-figure(4);plot(t,R_Source,Color="r");
-figure(5);plot(t,G_Source,Color="g");
-figure(6);plot(t,B_Source,Color="b");
+figure(4);plot(t,R_c,Color="r",Marker=".");
+hold on
+%figure(5);
+plot(t,G_c,Color="g",Marker=".");
+%figure(6);
+plot(t,B_c,Color="b",Marker=".");
+hold off
+
+
+figure(4);plot(t,R_Source_light,Color="r",Marker=".");
+hold on
+%figure(5);
+plot(t,G_Source_light,Color="g",Marker="^");
+%figure(6);
+plot(t,B_Source_light,Color="b",Marker="o");
+hold off
 
 
 
