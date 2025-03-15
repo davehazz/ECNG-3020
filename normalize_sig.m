@@ -3,7 +3,7 @@ function [outputArg1,outputArg2,outputArg3] = normalize_sig(inputArg1,inputArg2,
 %   this function provides the normilization of the source signal
 % it normalize = ((Sx - mean) / standard deviation )
 
-c = 700;
+c = 600;
 
 outputArg1 = zeros(1,c);
 outputArg2 = zeros(1,c);

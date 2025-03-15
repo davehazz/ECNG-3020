@@ -5,15 +5,15 @@ function [R_Source,G_Source,B_Source] = signal_source(inputArg1,inputArg2,inputA
 %this function creates the signal source from finding the mean pixel
 %intensities of each frame
 
-size = 700;
+size = 600;
 
 R_Source = zeros(1,size);
 G_Source = zeros(1,size);
 B_Source = zeros(1,size);
 
 for x = 1:size
-    R_Source(x) = mean2(inputArg1(:,:,x));
-    G_Source(x) = mean2(inputArg1(:,:,x));
-    B_Source(x) = mean2(inputArg1(:,:,x));
+    R_Source(x) = median(inputArg1(:,:,x),"all");
+    G_Source(x) = median(inputArg1(:,:,x),"all");
+    B_Source(x) = median(inputArg1(:,:,x),"all");
 
 end

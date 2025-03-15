@@ -2,18 +2,20 @@ function [vectorRchannel,vectorGchannel,vectorBchannel,test_frames] = color_chan
 
 %read vids
 %this function reads in all the images into a vector
-vid = VideoReader("IMG_9136.MOV");
-len = 700;
+vid = VideoReader("IMG_9559.MOV");
+len = 600;
 
-vectorRchannel = zeros(1920,1080,len);
-vectorGchannel = zeros(1920,1080,len);
-vectorBchannel = zeros(1920,1080,len);
+LR=1920;
+SR=640;
+LC=1080;
+SC= 480;
 
-%newGch = zeros(1920,1080,30);
+vectorRchannel = zeros(1080,1920,len);
+vectorGchannel = zeros(1080,1920,len);
+vectorBchannel = zeros(1080,1920,len);
 
 
-
-test_frames = read(vid,[1 len]);
+test_frames = read(vid,[300 900]);
 
 
 stopper = round(vid.Duration/5);
@@ -55,7 +57,7 @@ end
 
 %}
 
-for x =1:len
+for x =1:600
     %this gave an error bacause i'm saving one image in a vector for size
     %30
     %str(x)= sprintf(" 'C:\\Users\\unity\\source\\repos\\Year two\\clas\\ECNG 3020 Heart Rate\\frame%d.jpg' ",count);

@@ -1,9 +1,13 @@
 function [R_filtered_avg,G_filtered_avg,B_filtered_avg] = filter_img_avg(inputArg1,inputArg2,inputArg3)
 
+a = 41;
+b = 31;
+c = 600;
+
 %this function performs the filering on the image
-R_filtered_avg = zeros(151,301,800);
-G_filtered_avg = zeros(151,301,800);
-B_filtered_avg = zeros(151,301,800);
+R_filtered_avg = zeros(a,b,c);
+G_filtered_avg = zeros(a,b,c);
+B_filtered_avg = zeros(a,b,c);
 
 
 %%% Averaging Filter
@@ -19,7 +23,7 @@ AvgFil = AvgFil/sum(AvgFil(:));
 %ImgG = convn(double(ROI),AvgFil,'same');
 %ImgB = convn(double(ROI3),AvgFil,'same');
 
-for x = 1:700
+for x = 1:c
     R_filtered_avg(:,:,x) = convn(inputArg1(:,:,x),AvgFil,"same");
     G_filtered_avg(:,:,x) = convn(inputArg2(:,:,x),AvgFil,"same");
     B_filtered_avg(:,:,x) = convn(inputArg3(:,:,x),AvgFil,"same");
