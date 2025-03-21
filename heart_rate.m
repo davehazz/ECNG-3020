@@ -1,21 +1,37 @@
 %creating a video reader object
-v = VideoReader("IMG_9559.MOV");
+v = VideoReader("C:\Users\unity\Documents\Engineering uWI\YEAR THREE\ECNG 3020\project code\videos\IMG_9901.MOV");
 
-videor = readFrame(v);
+videor = read(v, [1 600]);
 imved = v.NumFrames;
+
+imshow(readFrame(v));
 
 te(:,:,1) = double(videor(:,:,1,1)); %aquire red channel
 t = 0:1/29.98:20;
 %-------------Part 1:vectors for each color channel---------
 
 [vectorRchannel,vectorGchannel,vectorBchannel,imgg] = color_channel(v);
+len = 600;
+vectorRchannel = zeros(1088,1920,len);
+vectorGchannel = zeros(1088,1920,len);
+vectorBchannel = zeros(1088,1920,len);
 
-figure("Name","whole image");imshow(videor(:,:,2));
+for x =1:600
+    
+    vectorRchannel(:,:,x) = double(videor(:,:,1,x)); %aquire red channel
+    vectorGchannel(:,:,x) = double(videor(:,:,2,x)); %aquire green channel
+    vectorBchannel(:,:,x) = double(videor(:,:,3,x)); %aquire blue channel
+
+end 
+
+
+figure("Name","whole image");
+imshow(uint8(videor(:,:,2)));
 
 %figure(1);imshow(uint8(vectorRchannel(:,:,1)));
-figure(1);imshow(uint8(vectorRchannel(:,:,1)));
-figure(2);imshow(uint8(vectorGchannel(:,:,1)));
-figure(3);imshow(uint8(vectorBchannel(:,:,1)));
+figure('Name','red channel');imshow(uint8(vectorRchannel(:,:,1)));
+figure('Name','green channel');imshow(uint8(vectorGchannel(:,:,1)));
+figure('Name','blue chennel');imshow(uint8(vectorBchannel(:,:,1)));
 
 
 
@@ -40,11 +56,13 @@ end
 plot(t,R_m2_1);
 
 
-figure(4);imshow(uint8(ROI_G(:,:,7)));
+figure(4);imshow(uint8(ROI_G(:,:,10)));
 figure(5);imshow(uint8(ROI_G(:,:,60)));
 figure(6);imshow(uint8(ROI_G(:,:,90)));
 
-
+brk = uint8(ROI_G(:,:,10));
+brk = brk./3;
+imshow(brk);
 %------------Part 3:filtering the image----------------
 [R_filtered,G_filtered,B_filtered] = filter_img_avg(ROI_R,ROI_G,ROI_B);
 
@@ -114,9 +132,10 @@ hold off
 newR = normalize(R_Source);
 newG = normalize(G_Source);
 newB = normalize(B_Source);
-figure(13);plot(t,newR);
-%hold on
-figure(14);plot(t,R_Source);
+figure(13);plot(t,newG);
+hold on
+figure(14);
+plot(t,normalizeG);
 hold off
 
 
@@ -124,9 +143,17 @@ hold off
 figure('Name','After Normalization');
 plot(t,normalizeR,LineStyle="-");
 hold on
-plot(t,normalizeG,LineStyle="--");
+plot(t,normalizeG,Color='g');
 plot(t,normalizeB,LineStyle=":");
 hold off
+
+figure('Name','before detreding');
+plot(t,normalizeG,LineStyle="-");
+hold on
+plot(t,newG,LineStyle=":");
+legend('MINE  Data','MATLAB  Data')
+hold off
+
 
 %Detrending
 
@@ -144,9 +171,9 @@ GG_de = detrend(newG);
 BB_de = detrend(newB);
 
 figure(16);
-plot(t,R_de,LineStyle="-");
+plot(t,G_de,LineStyle="-");
 hold on
-plot(t,RR_de,LineStyle=":");
+plot(t,GG_de,LineStyle=":");
 legend('MINE  Data','MATLAB  Data')
 hold off
 
@@ -182,28 +209,15 @@ hold off
 
 %------------Part 6: ICA------------------
 
-timmm = v.FrameRate*30;
-
-%figure(2);plot(G_Source,LineStyle="--",Color="g");
-%figure(3);plot(B_Source,LineStyle=":",Color="b");
-
-combined_signal = ones(3,200);
-combined_signal(1,:) = normalizeR(1,:);
-combined_signal(2,:) = normalizeG(1,:);
-combined_signal(3,:) = normalizeB(1,:);
-
-
-tim = 0:0.03333:1;
 %ica
-
 
 Zica_G = fastICA(G_de,3,"kurtosis",0);%mine
 Zica_GG = fastICA(GG_de,3,"kurtosis",0);%matlab
 Zica_R = fastICA(R_de,3,"kurtosis",0);
 Zica_RR = fastICA(RR_de,3,"kurtosis",0);
 Zica_B = fastICA(B_de,3,"kurtosis",0);
-ZICA_MAF_R = fastICA(y,3,"kurtosis,0",0);
-ZICA_MAF_G = fastICA(y1,3,"kurtosis,0",0);
+ZICA_BB = fastICA(BB_de,3,"kurtosis,0",0);
+
 
 
 %Zica_RR = fastICA(RR_de,3);
@@ -219,21 +233,21 @@ hold off
 figure(20);
 plot(t,Zica_R(1,:),LineStyle="-",Color="r");
 hold on
-plot(t,Zica_G(1,:),LineStyle=":",Color='g');
+plot(t,Zica_G(1,:),Color='g');
 plot(t,Zica_B(3,:),LineStyle="-.",Color='b');
 
 
 figure(21);
-plot(t,Zica_G(1,:),LineStyle="-",Color='r');
+plot(t,Zica_B(1,:),LineStyle="-",Color='r');
 hold on
-plot(t,Zica_G(2,:),LineStyle=":",Color='g');
-plot(t,Zica_G(3,:),LineStyle="-.",Color='b');
+plot(t,Zica_GG(2,:),LineStyle=":",Color='g');
+plot(t,Zica_GG(3,:),LineStyle="-.",Color='b');
 
 
 figure(22);
-plot(t,Zica_B(1,:),LineStyle="-",Color='r');
+plot(t,Zica_R(3,:),LineStyle="-",Color='r');
 hold on
-plot(t,Zica_B(2,:),LineStyle=":",Color='g');
+plot(t,Zica_GG(3,:),LineStyle=":",Color='g');
 plot(t,Zica_B(3,:),LineStyle="-.",Color='b');
 
 
@@ -243,8 +257,15 @@ plot(t,Zica_B(3,:),LineStyle="-.",Color='b');
 figure(3);pwelch(Zica_R(1,:));
 figure(1);pwelch(Zica_G(1,:));
 figure(2);pwelch(R_Source);
+
+
 figure(4);pwelch(normalizeG);
-[ppx,f] = pwelch(Zica_G(1,:));
+[ppxg,fG] = pwelch(Zica_G(1,:));
+[ppxgg,fGG] = pwelch(Zica_GG(1,:));
+
+figure('Name','signal');
+plot(fG,10*log10(ppxg));
+
 pwelch(normalizeG);
 
 
@@ -335,7 +356,7 @@ plot(filtered_signal);
 figure(1);bandpass(ZICA_MAF_G(1,:), [0.8 2], 300);%
 figure(2);bandpass(ZICA_MAF_R(1,:), [0.8 2], 300);%
 figure(30);bandpass(Zica_R(1,:), [0.8 2], 100);
-figure(40);bandpass(Zica_G(1,:), [0.8 2], 300);
+figure(40);bandpass(Zica_G(1,:), [0.8 2], 100);
 figure(6);bandpass(Zica_G(2,:), [0.8 2], 500);
 
 
@@ -344,25 +365,6 @@ hold off
 
 %----------PSD Of the signal---------
 
-
-
-f = Fs*(0:200/2-1)/200;
-S_meg = abs(s_oneSide)/(100);
-
-plot(S_meg);
-plot(Zica_B(1,:));
-
-
-ppx = pwelch(S_meg);
-plot(ppx); 
-
-y = bandpass(ppx,[1 2], 1000);
-plot(y);
-
-
-y = fft(R_Source);
-plot(t,abs(y));
-figure(4);plot(y);
 
 %{
 %{
@@ -493,7 +495,7 @@ Mld = rica(y,2);
 
 Fs= 1000; %sampling frequency
 T = 1/Fs; %sampling period
-L = 3000;
+L = 30000;
 t = (0:L-1)*T; %time vector
 
 y = 0.8 + 0.7*sin(2*pi*50*t) + sin(2*pi*120*t);
@@ -518,9 +520,9 @@ figure("Name","full time");
 plot(t,y);
 
 %finding the pwd using the fft
-nfft = fft(seg_1);%the fft
+nfft = fft(Zica_G(1,:));%the fft
 
-plot(Fs/L*(0:500-1),abs(nfft),"LineWidth",3)
+plot(Fs/L*(0:600-1),abs(nfft),"LineWidth",3)
 title("Complex Magnitude of fft Spectrum")
 xlabel("f (Hz)")
 ylabel("|fft(X)|")
@@ -530,7 +532,7 @@ real_val = abs(nfft);%magnitudes of it
 %length of it
 length_nfft = length(abs(nfft));
 sq_val = (abs(nfft).^2)./(2);  %the actual PSD
-%sq_val = (abs(nfft).^2)./(length(nfft));  %the actual PSD
+sq_val = (abs(nfft).^2)./(length(nfft));  %the actual PSD
 
 figure("Name","seg 1 psd");
 plot(sq_val);
