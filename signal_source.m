@@ -12,8 +12,8 @@ G_Source = zeros(1,size);
 B_Source = zeros(1,size);
 
 for x = 1:size
-    R_Source(x) = median(inputArg1(:,:,x),"all");
-    G_Source(x) = median(inputArg1(:,:,x),"all");
-    B_Source(x) = median(inputArg1(:,:,x),"all");
+    R_Source(x) = mean(inputArg1(:,:,x),"all");
+    G_Source(x) = mean(inputArg1(:,:,x),"all");
+    B_Source(x) = mean(inputArg1(:,:,x),"all");
 
 end
