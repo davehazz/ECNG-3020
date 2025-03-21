@@ -555,7 +555,19 @@ faceDetector = vision.CascadeObjectDetector;
 I = imread("C:\Users\unity\Documents\Engineering uWI\YEAR THREE\ECNG 3020\project code\face.jpg");
 bboxes = faceDetector(I);
 
-IFaces = insertObjectAnnotation(I,'rectangle',bboxes,'Face');   
-figure
-imshow(IFaces)
-title('Detected faces');
+
+% Read a video frame and run the face detector.
+bbox = step(faceDetector, I);
+
+% Draw the returned bounding box around the detected face.
+I = insertShape(I, "rectangle", bbox);
+figure; imshow(I); title("Detected face");
+
+bboxPoints = bbox2points(bbox(1, :));
+
+points = detectMinEigenFeatures(im2gray(I),"ROI",  bbox);
+
+% Display the detected points.
+figure, imshow(videoFrame), hold on, title("Detected features");
+plot(points);
+
