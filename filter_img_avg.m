@@ -1,7 +1,7 @@
 function [R_filtered_avg,G_filtered_avg,B_filtered_avg] = filter_img_avg(inputArg1,inputArg2,inputArg3)
 
-a = 41;
-b = 31;
+a = 211;
+b = 231;
 c = 600;
 
 %this function performs the filering on the image
